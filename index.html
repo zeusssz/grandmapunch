@@ -65,10 +65,10 @@
         .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
-            padding: 40px; /* Increased padding */
+            padding: 40px; 
             border: 1px solid #888;
             width: 60%;
-            font-size: 24px; /* Increased font size */
+            font-size: 24px; 
         }
 
         .close {
@@ -85,7 +85,6 @@
             text-decoration: none;
         }
 
-        /* Different text colors */
         .green-text {
             color: green;
         }
@@ -97,6 +96,8 @@
     <script>
         let playerScore = 0;
         let grandmaScore = 0;
+        let playerConsecutive = 0;
+        let grandmaConsecutive = 0;
 
         document.addEventListener('DOMContentLoaded', function() {
             const oddButton = document.getElementById('odd-button');
@@ -126,14 +127,32 @@
 
                     if ((choice === 'odd' && isPlayerOdd) || (choice === 'even' && !isPlayerOdd)) {
                         playerScore++;
+                        playerConsecutive++;
+                        grandmaConsecutive = 0;
                         playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
                         grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
                         showModal('You punched Grandma!', 'green-text');
                     } else {
                         grandmaScore++;
+                        grandmaConsecutive++;
+                        playerConsecutive = 0;
                         playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
                         grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
                         showModal('Ouch! Grandma punched you!', 'red-text');
+                    }
+
+                    if (playerConsecutive === 3) {
+                        grandmaScore = Math.max(0, grandmaScore - 1);
+                        grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
+                        showModal('You performed a fatality on Grandma!', 'green-text', true);
+                        playerConsecutive = 0;
+                    }
+
+                    if (grandmaConsecutive === 3) {
+                        playerScore = Math.max(0, playerScore - 1);
+                        playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
+                        showModal('Grandma performed a fatality on you!', 'red-text', true);
+                        grandmaConsecutive = 0;
                     }
 
                     if (playerScore === 10 || grandmaScore === 10) {
@@ -150,15 +169,19 @@
                 }
                 playerScore = 0;
                 grandmaScore = 0;
+                playerConsecutive = 0;
+                grandmaConsecutive = 0;
                 playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
                 grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
             }
 
-            // Modal Functions
-            function showModal(message, color) {
+            function showModal(message, color, isFatality = false) {
                 modal.style.display = 'block';
                 modalContent.querySelector('p').textContent = message;
                 modalContent.querySelector('p').className = color;
+                if (isFatality) {
+                    modalContent.querySelector('p').textContent = "FATALITY!";
+                }
             }
 
             closeBtn.onclick = function() {
