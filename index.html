@@ -98,6 +98,7 @@
         let grandmaScore = 0;
         let playerConsecutive = 0;
         let grandmaConsecutive = 0;
+        let isRolling = false;
 
         document.addEventListener('DOMContentLoaded', function() {
             const oddButton = document.getElementById('odd-button');
@@ -109,14 +110,19 @@
             const closeBtn = modal.querySelector('.close');
 
             oddButton.addEventListener('click', () => {
-                playGame('odd');
+                if (!isRolling) {
+                    playGame('odd');
+                }
             });
 
             evenButton.addEventListener('click', () => {
-                playGame('even');
+                if (!isRolling) {
+                    playGame('even');
+                }
             });
 
             function playGame(choice) {
+                isRolling = true;
                 playerScoreDisplay.textContent = 'Rolling...';
                 grandmaScoreDisplay.textContent = '';
                 setTimeout(function() {
@@ -158,6 +164,7 @@
                     if (playerScore === 10 || grandmaScore === 10) {
                         endGame();
                     }
+                    isRolling = false;
                 }, 2000);
             }
 
