@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grandma Punch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #ffcc00;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 100px;
+            text-align: center;
+        }
+
+        .button {
+            background-color: #ff0000;
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        .button:hover{
+            background-color: #d30000;
+        }
+
+        .score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .hra {
+            border: 1px solid black;
+            margin-top: .5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 40px; /* Increased padding */
+            border: 1px solid #888;
+            width: 60%;
+            font-size: 24px; /* Increased font size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* Different text colors */
+        .green-text {
+            color: green;
+        }
+
+        .red-text {
+            color: red;
+        }
+    </style>
+    <script>
+        let playerScore = 0;
+        let grandmaScore = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const oddButton = document.getElementById('odd-button');
+            const evenButton = document.getElementById('even-button');
+            const playerScoreDisplay = document.getElementById('player-score');
+            const grandmaScoreDisplay = document.getElementById('grandma-score');
+            const modal = document.getElementById('modal');
+            const modalContent = modal.querySelector('.modal-content');
+            const closeBtn = modal.querySelector('.close');
+
+            oddButton.addEventListener('click', () => {
+                playGame('odd');
+            });
+
+            evenButton.addEventListener('click', () => {
+                playGame('even');
+            });
+
+            function playGame(choice) {
+                playerScoreDisplay.textContent = 'Rolling...';
+                grandmaScoreDisplay.textContent = '';
+                setTimeout(function() {
+                    const playerRoll = Math.floor(Math.random() * 10) + 1;
+                    const grandmaRoll = Math.floor(Math.random() * 10) + 1;
+                    const isPlayerOdd = playerRoll % 2 !== 0;
+                    const isGrandmaOdd = grandmaRoll % 2 !== 0;
+
+                    if ((choice === 'odd' && isPlayerOdd) || (choice === 'even' && !isPlayerOdd)) {
+                        playerScore++;
+                        playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
+                        grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
+                        showModal('You punched Grandma!', 'green-text');
+                    } else {
+                        grandmaScore++;
+                        playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
+                        grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
+                        showModal('Ouch! Grandma punched you!', 'red-text');
+                    }
+
+                    if (playerScore === 10 || grandmaScore === 10) {
+                        endGame();
+                    }
+                }, 2000);
+            }
+
+            function endGame() {
+                if (playerScore === 10) {
+                    showModal("Grandma's dead! You win!", 'green-text');
+                } else if (grandmaScore === 10) {
+                    showModal('You have a concussion! Grandma won!', 'red-text');
+                }
+                playerScore = 0;
+                grandmaScore = 0;
+                playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
+                grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
+            }
+
+            // Modal Functions
+            function showModal(message, color) {
+                modal.style.display = 'block';
+                modalContent.querySelector('p').textContent = message;
+                modalContent.querySelector('p').className = color;
+            }
+
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Grandma Punch</h1>
+    </header>
+    <hr class="hra">
+    <main>
+        <h2>Roll to Play :</h2>
+        <button id="odd-button" class="button">Odd</button>
+        <button id="even-button" class="button">Even</button>
+        <div id="player-score" class="score">Your Score: 0</div>
+        <div id="grandma-score" class="score">Grandma's Score: 0</div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p></p>
+        </div>
+    </div>
+</body>
+</html>
