@@ -94,20 +94,27 @@
         }
     </style>
     <script>
-        let playerScore = 0;
-        let grandmaScore = 0;
-        let playerConsecutive = 0;
-        let grandmaConsecutive = 0;
-        let isRolling = false;
-
         document.addEventListener('DOMContentLoaded', function() {
             const oddButton = document.getElementById('odd-button');
             const evenButton = document.getElementById('even-button');
             const playerScoreDisplay = document.getElementById('player-score');
             const grandmaScoreDisplay = document.getElementById('grandma-score');
+            const totalScoreDisplay = document.getElementById('total-score');
             const modal = document.getElementById('modal');
             const modalContent = modal.querySelector('.modal-content');
             const closeBtn = modal.querySelector('.close');
+
+            let totalScore = localStorage.getItem('totalScore');
+            if (!totalScore) {
+                totalScore = 0;
+            }
+            totalScoreDisplay.textContent = 'Total Score: ' + totalScore;
+
+            let playerScore = 0;
+            let grandmaScore = 0;
+            let playerConsecutive = 0;
+            let grandmaConsecutive = 0;
+            let isRolling = false;
 
             oddButton.addEventListener('click', () => {
                 if (!isRolling) {
@@ -165,6 +172,10 @@
                         endGame();
                     }
                     isRolling = false;
+
+                    totalScore = playerScore + parseInt(localStorage.getItem('totalScore'));
+                    totalScoreDisplay.textContent = 'Total Score: ' + totalScore;
+                    localStorage.setItem('totalScore', totalScore);
                 }, 2000);
             }
 
@@ -180,6 +191,10 @@
                 grandmaConsecutive = 0;
                 playerScoreDisplay.textContent = 'Your Score: ' + playerScore;
                 grandmaScoreDisplay.textContent = "Grandma's Score: " + grandmaScore;
+
+                totalScore = playerScore + parseInt(localStorage.getItem('totalScore'));
+                totalScoreDisplay.textContent = 'Total Score: ' + totalScore;
+                localStorage.setItem('totalScore', totalScore);
             }
 
             function showModal(message, color, isFatality = false) {
@@ -214,6 +229,7 @@
         <button id="even-button" class="button">Even</button>
         <div id="player-score" class="score">Your Score: 0</div>
         <div id="grandma-score" class="score">Grandma's Score: 0</div>
+        <div id="total-score" class="score">Total Score: 0</div>
     </main>
 
     <div id="modal" class="modal">
